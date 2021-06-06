@@ -15,7 +15,7 @@ CREATE TABLE roles (
     title VARCHAR(30) NOT NULL,
     salary DECIMAL(10,2),
     departmentID INTEGER,
-    CONSTRAINT fk_role_department FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL
+    FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL
 );
 
 -- CREATE TABLE lead (
@@ -30,9 +30,9 @@ CREATE TABLE employees (
     last_name VARCHAR(30) NOT NULL,
     roleID INTEGER,
     departmentID INTEGER,
-    CONSTRAINT fk_employee_department FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL,
-    CONSTRAINT fk_role FOREIGN KEY (roleID) REFERENCES roles(id) ON DELETE SET NULL,
-    -- CONSTRAINT fk_manager FOREIGN KEY (managerID) REFERENCES managers(id) ON DELETE SET NULL,
+    FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL,
+    FOREIGN KEY (roleID) REFERENCES roles(id) ON DELETE SET NULL,
+    -- FOREIGN KEY (managerID) REFERENCES managers(id) ON DELETE SET NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 
 );
