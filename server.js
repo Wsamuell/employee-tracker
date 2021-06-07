@@ -85,7 +85,7 @@ function viewRoles() {
 };
 function viewEmployees() {
     db.query(
-        'SELECT * FROM employees',
+        'SELECT employees.first_name, employees.last_name, roles.title, roles.salary , departments.name, CONCAT_WS(managers.first_name, managers.last_name) AS Managers FROM employees INNER JOIN roles ON employees.roleID = roles.id INNER JOIN departments ON departments.id = roles.departmentID RIGHT JOIN managers ON employees.managerID = employees.managerID;',
         function (err, results) {
             if (err) throw err
             console.table(results)
@@ -117,26 +117,9 @@ function addDepartment() {
     })
 };
 
-// for loop for employee choices
 // for loop and function for updated department
-
-const updatedEmployees = [];
-
-function selectAllEmployees() {
-    db.query(
-        'SELECT first_name,last_name FROM employees',
-        function (err, results) {
-            if (err) throw err
-            for (i = 0; i < results.length; i++) {
-                updatedEmployees.push(results[i].first_name + ' ' + results[i].last_name);
-                // console.log(results[i].first_name + ' ' + results[i].last_name)    
-            }
-            // console.log(updatedEmployees)
-        });
-        return updatedEmployees;
-};
 // for loop is put inside function so we can simply use the function to call it where ever needed
-var updatedRoles = [];
+const updatedRoles = [];
 
 function selectRole() {
     db.query(
@@ -152,7 +135,7 @@ function selectRole() {
 
 
 // for loop and function for updated managers
-var updatedManagers = [];
+const updatedManagers = [];
 
 function selectManager() {
     db.query(
@@ -272,29 +255,47 @@ function addRole() {
 
 };
 function updateEmployee() {
-    inquirer.prompt([
-        {
-            type: "list",
-            name: "employeeName",
-            message: "Please choose select Employee",
-            choices: selectAllEmployees()
-        },
-        {
-            type: "list",
-            name: "roleName",
-            message: "Please select New Role",
-            choices: selectRole()
-        }
-    ]).then((answers) => {
-        var addEmployeeRole = selectRole().indexOf(answers.roleName) + 1
-        db.query(
-        'UPDATE employees SET WHERE ?',
-        {
+    db.query("SELECT employees.last_name FROM employees", function (err, res) {
+        if (err) throw err
+        console.table(res)
 
-            roleID: addEmployeeRole,
-        }    
-        )
-    })
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "employeeName",
+                message: "Please choose select Employee last name",
+                choices: function () {
+                    const lastName = [];
+                    for (var i = 0; i < res.length; i++) {
+                        lastName.push(res[i].last_name);
+                    }
+                    return lastName;
+                }
+            },
+            {
+                type: "list",
+                name: "roleName",
+                message: "Please select New Role",
+                choices: selectRole()
+            }
+        ]).then((answers) => {
+            var addEmployeeRole = selectRole().indexOf(answers.roleName) + 1
+            db.query(
+                'UPDATE employees SET WHERE ?',
+                {
+                    last_name: answers.lastName
+                },
+                {
+                    roleID: addEmployeeRole,
+
+                },
+                function (err, results) {
+                    if (err) throw err
+                    console.table(results)
+                    viewEmployees()
+                })
+        });
+    });
 };
 
 

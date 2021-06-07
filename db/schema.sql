@@ -14,26 +14,26 @@ CREATE TABLE roles (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30) NOT NULL,
     salary DECIMAL(10,2),
-    departmentID INTEGER,
-    FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL
+    departmentID INT,
+    FOREIGN KEY (departmentID) REFERENCES departments(id)
 );
 
 CREATE TABLE managers (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    departmentID INTEGER,
-    FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL
+    departmentID INT,
+    FOREIGN KEY (departmentID) REFERENCES departments(id)
 );
 
 CREATE TABLE employees (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
-    roleID INTEGER,
-    managerID INTEGER,
-    FOREIGN KEY (managerID) REFERENCES managers(id) ON DELETE SET NULL,
-    FOREIGN KEY (roleID) REFERENCES roles(id) ON DELETE SET NULL
+    roleID INT,
+    managerID INT,
+    FOREIGN KEY (managerID) REFERENCES managers(id),
+    FOREIGN KEY (roleID) REFERENCES roles(id)
     -- FOREIGN KEY (managerID) REFERENCES managers(id) ON DELETE SET NULL,
 
 );
