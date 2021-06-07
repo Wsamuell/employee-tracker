@@ -12,8 +12,6 @@ db.connect(err => {
 });
 
 // stored answers to all questions
-let newAction = [];
-
 
 // start the inquire Actions
 function startUp() {
@@ -119,6 +117,57 @@ function addDepartment() {
     })
 };
 
+// for loop for employee choices
+// for loop and function for updated department
+
+const updatedEmployees = [];
+
+function selectAllEmployees() {
+    db.query(
+        'SELECT first_name,last_name FROM employees',
+        function (err, results) {
+            if (err) throw err
+            for (i = 0; i < results.length; i++) {
+                updatedEmployees.push(results[i].first_name + ' ' + results[i].last_name);
+                // console.log(results[i].first_name + ' ' + results[i].last_name)    
+            }
+            // console.log(updatedEmployees)
+        });
+        return updatedEmployees;
+};
+// for loop is put inside function so we can simply use the function to call it where ever needed
+var updatedRoles = [];
+
+function selectRole() {
+    db.query(
+        'SELECT * FROM roles',
+        function (err, results) {
+            if (err) throw err
+            for (i = 0; i < results.length; i++) {
+                updatedRoles.push(results[i].title);
+            }
+        });
+    return updatedRoles;
+};
+
+
+// for loop and function for updated managers
+var updatedManagers = [];
+
+function selectManager() {
+    db.query(
+        'SELECT * FROM managers',
+        function (err, results) {
+            if (err) throw err
+            for (i = 0; i < results.length; i++) {
+                updatedManagers.push(results[i].first_name + ' ' + results[i].last_name);
+            }
+        });
+    return updatedManagers;
+};
+
+
+
 // employee is incomplete
 function addEmployee() {
     inquirer.prompt([
@@ -141,37 +190,37 @@ function addEmployee() {
             }
         },
         {
-            type: "input",
-            name: "roleName",
-            message: "Please enter Role",
-            validate: (value) => {
-                if (value) { return true }
-                else { return "Role Required" }
-            }
+            type: "list",
+            name: "managerName",
+            message: "Please choose a Manager",
+            choices: selectManager()
         },
         {
-            type: "input",
-            name: "departmentID",
-            message: "Please enter departmentID",
-            validate: (value) => {
-                if (value) { return true }
-                else { return "departmentID Required" }
-            }
-        },
+            type: "list",
+            name: "roleName",
+            message: "Please select Role",
+            choices: selectRole()
+        }
 
-        // correct this in the morning
+        // something is missing, im missing the value managers and roleID for roles is not displaying
     ]).then((answers) => {
+
+        // by using indexOf, we area asking the script to replace the value of answer with the initial value which is the id
+        var addEmployeeRole = selectRole().indexOf(answers.roleName) + 1
+        var addEmployeeManager = selectManager().indexOf(answers.managerName) + 1
+
         db.query(
-            'INSERT INTO roles SET ?',
+            'INSERT INTO employees SET ?',
             {
-                title: answers.roleName,
-                salary: answers.salary,
-                departmentID: answers.departmentID
+                first_name: answers.firstName,
+                last_name: answers.lastName,
+                roleID: addEmployeeRole,
+                managerID: addEmployeeManager
             },
             function (err, results) {
                 if (err) throw err
                 console.table(results)
-                viewDepartments()
+                viewEmployees()
             });
     })
 
@@ -223,7 +272,29 @@ function addRole() {
 
 };
 function updateEmployee() {
+    inquirer.prompt([
+        {
+            type: "list",
+            name: "employeeName",
+            message: "Please choose select Employee",
+            choices: selectAllEmployees()
+        },
+        {
+            type: "list",
+            name: "roleName",
+            message: "Please select New Role",
+            choices: selectRole()
+        }
+    ]).then((answers) => {
+        var addEmployeeRole = selectRole().indexOf(answers.roleName) + 1
+        db.query(
+        'UPDATE employees SET WHERE ?',
+        {
 
+            roleID: addEmployeeRole,
+        }    
+        )
+    })
 };
 
 

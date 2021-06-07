@@ -18,19 +18,21 @@ CREATE TABLE roles (
     FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL
 );
 
--- CREATE TABLE lead (
---     id INTEGER AUTO_INCREMENT PRIMARY KEY,
---     first_name VARCHAR(30) NOT NULL,
---     last_name VARCHAR(30) NOT NULL
--- );
+CREATE TABLE managers (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    departmentID INTEGER,
+    FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL
+);
 
 CREATE TABLE employees (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     roleID INTEGER,
-    departmentID INTEGER,
-    FOREIGN KEY (departmentID) REFERENCES departments(id) ON DELETE SET NULL,
+    managerID INTEGER,
+    FOREIGN KEY (managerID) REFERENCES managers(id) ON DELETE SET NULL,
     FOREIGN KEY (roleID) REFERENCES roles(id) ON DELETE SET NULL
     -- FOREIGN KEY (managerID) REFERENCES managers(id) ON DELETE SET NULL,
 
